@@ -21,11 +21,17 @@ void setup() {
 }
 
 void loop() {
+  int i = 0;
+
   digitalWrite(LED_BUILTIN, HIGH);
 
   hc12.loop();
-  updateDisplay(1,1,0);
 
+  for(i = 0; i < 100; i++) {
+    updateDisplay(i,i,0);
+    delay(300);
+  }
+  
   digitalWrite(LED_BUILTIN, LOW);
   delay(1000);
 }

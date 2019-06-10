@@ -30,7 +30,7 @@ void startupDisplay()
 void updateDisplay(int8_t home, int8_t guest, int8_t time)
 {
     uint8_t checksum=0;
-    String check;
+    char hex[17]="0123456789ABCDEF";
 
     /*************************************************************************
     Score messages
@@ -54,32 +54,31 @@ void updateDisplay(int8_t home, int8_t guest, int8_t time)
     checksum = 0xDA;
     if (guest < 10) {
         sendScore[SCORE_FIRST_DIG+0] = ' ';
-        sendScore[SCORE_FIRST_DIG+1] = ' ' + guest;
+        sendScore[SCORE_FIRST_DIG+1] = '0' + guest;
         checksum += guest;
     }
     else if (guest < 100) {
         checksum += FIRSTNONSPACE;
-        sendScore[SCORE_FIRST_DIG+0] = ' ' + (guest%10);
-        sendScore[SCORE_FIRST_DIG+1] = ' ' + (guest/10);
+        sendScore[SCORE_FIRST_DIG+0] = '0' + (guest/10);
+        sendScore[SCORE_FIRST_DIG+1] = '0' + (guest%10);
         checksum += (guest%10);
         checksum += (guest/10);
     }
 
     if (home < 10) {
         sendScore[SCORE_FIRST_DIG+2] = ' ';
-        sendScore[SCORE_FIRST_DIG+3] = ' ' + home;
+        sendScore[SCORE_FIRST_DIG+3] = '0' + home;
         checksum += home;
     } 
     else if (home < 100) {
         checksum += FIRSTNONSPACE;
-        sendScore[SCORE_FIRST_DIG+2] = ' ' + (home%10);
-        sendScore[SCORE_FIRST_DIG+3] = ' ' + (home/10);
+        sendScore[SCORE_FIRST_DIG+2] = '0' + (home/10);
+        sendScore[SCORE_FIRST_DIG+3] = '0' + (home%10);
         checksum += (home%10);
         checksum += (home/10);
     }
-    check = String(checksum, HEX);
-    sendScore[CHECKSUM_FIRST_DIG+0] = check[0];
-    sendScore[CHECKSUM_FIRST_DIG+1] = check[1];
+    sendScore[CHECKSUM_FIRST_DIG+0] = hex[ (checksum>>4) & 0x0F ];
+    sendScore[CHECKSUM_FIRST_DIG+1] = hex[ checksum & 0x0F ];
 
     digitalWrite(DATA_EN, HIGH);
     Serial.write((const uint8_t*)&selectScore,(size_t)16);
