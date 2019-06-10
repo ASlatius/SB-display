@@ -6,8 +6,8 @@
 #include "../../SB-controller/include/gamescore.h"
 #include "display.h"
 
-SoftwareSerial HC12Serial(2,3);
-HC12 hc12(&HC12Serial, 5, 9600);
+SoftwareSerial HC12Serial(6,7);
+HC12 hc12(&HC12Serial, 8, 9600);
 GameScore gamescore;
 GameTime gametime;
 
@@ -23,7 +23,8 @@ void setup() {
 void loop() {
   digitalWrite(LED_BUILTIN, HIGH);
 
-  updateDisplay();
+  hc12.loop();
+  updateDisplay(1,1,0);
 
   digitalWrite(LED_BUILTIN, LOW);
   delay(1000);
